@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-3">
+        <!-- Input Form -->
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-primary text-white py-2">
+                    <h5 class="mb-0"><i class="bi bi-clipboard-data"></i> Daily Update</h5>
+                </div>
+                <div class="card-body">
+                    <form id="progressForm">
+                        <div class="mb-2">
+                            <label class="form-label small">Weight (kg)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm" name="weight" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Body Fat (%)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm" name="body_fat" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Calories Consumed</label>
+                            <input type="number" class="form-control form-control-sm" name="calories_consumed" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Calories Burned</label>
+                            <input type="number" class="form-control form-control-sm" name="calories_burned" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Workout Minutes</label>
+                            <input type="number" class="form-control form-control-sm" name="workout_duration" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Sleep Hours</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm" name="sleep_hours" min="0" max="12">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Sleep Quality (1-5)</label>
+                            <select class="form-select form-select-sm" name="sleep_quality">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3">3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-save"></i> Save Progress
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizations -->
+        <div class="col-md-8">
+            <div class="card shadow h-100">
+                <div class="card-header bg-primary text-white py-2">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Progress Overview</h5>
+                </div>
+                <div class="card-body p-2">
+                    <!-- Weight Trend -->
+                    <div class="mb-3">
+                        <h6 class="fs-6 mb-1">Weight Trend</h6>
+                        <div class="chart-container" style="height: 200px;">
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Calorie Balance -->
+                    <div class="mb-3">
+                        <h6 class="fs-6 mb-1">Calorie Balance</h6>
+                        <div class="chart-container" style="height: 200px;">
+                            <canvas id="calorieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Sleep Analysis -->
+                    <div class="mb-3">
+                        <h6 class="fs-6 mb-1">Sleep Analysis</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container" style="height: 180px;">
+                                    <canvas id="sleepHoursChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container" style="height: 180px;">
+                                    <canvas id="sleepQualityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <div class="card border-info">
+                                <div class="card-body p-2">
+                                    <h6 class="fs-6 mb-1">Sleep Goal Progress</h6>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-info" role="progressbar" 
+                                             style="width: ((sleep_hours|default([0])|sum / (goals.sleep_hours * 7)) * 100 if sleep_hours else 0 %">
+                                            {{ (sleep_hours|default([0])|sum)|round(1) }}/{{ goals.sleep_hours * 7 }} hrs
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Weekly Target: {{ goals.sleep_hours * 7 }} hours ({{ goals.sleep_hours }}hrs/night)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Summary -->
+                    <div class="row mt-2">
+                        <div class="col-md-6 mb-2">
+                            <div class="card border-primary h-100">
+                                <div class="card-body p-2">
+                                    <h6 class="fs-6 mb-1">Body Fat Goal</h6>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ ((progress_data[0].body_fat / goals.body_fat) * 100) if (progress_data and progress_data[0]) else 0 }}%">
+                                            {{ progress_data[0].body_fat|round(1) if (progress_data and progress_data[0]) else 0 }}%
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Target: {{ goals.body_fat }}%</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-2">
+                            <div class="card border-primary h-100">
+                                <div class="card-body p-2">
+                                    <h6 class="fs-6 mb-1">Weekly Workout Goal</h6>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ ((progress_data|map(attribute='workout_duration')|sum / 300) * 100) if progress_data else 0 }}%">
+                                            {{ progress_data|map(attribute='workout_duration')|sum|default(0) }}/300 mins
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Weekly Target: 300 minutes</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.getElementById('progressForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch('/api/submit-progress', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) throw new Error('Submission failed');
+        window.location.reload();
+    } catch (error) {
+        alert(error.message);
+    }
+});
+
+// Weight Chart
+new Chart(document.getElementById('weightChart'), {
+    type: 'line',
+    data: {
+        labels: {{ dates|tojson }},
+        datasets: [{
+            label: 'Weight (kg)',
+            data: {{ weights|tojson }},
+            borderColor: '#0d6efd',
+            borderWidth: 1.5,
+            tension: 0.1,
+            pointRadius: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                ticks: {
+                    font: {
+                        size: 10
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 9
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Calorie Chart
+new Chart(document.getElementById('calorieChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ dates|tojson }},
+        datasets: [
+            {
+                label: 'Consumed',
+                data: {{ calories_consumed|tojson }},
+                backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                borderColor: '#0d6efd',
+                borderWidth: 1,
+                borderRadius: 2
+            },
+            {
+                label: 'Burned',
+                data: {{ calories_burned|tojson }},
+                backgroundColor: 'rgba(253, 13, 13, 0.5)',
+                borderColor: '#fd0d0d',
+                borderWidth: 1,
+                borderRadius: 2
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 12,
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        size: 9
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 8
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Sleep Hours Chart
+new Chart(document.getElementById('sleepHoursChart'), {
+    type: 'line',
+    data: {
+        labels: {{ dates|tojson }},
+        datasets: [{
+            label: 'Sleep Hours',
+            data: {{ sleep_hours|default([])|tojson }},
+            borderColor: '#0dcaf0',
+            backgroundColor: 'rgba(13, 202, 240, 0.1)',
+            borderWidth: 1.5,
+            tension: 0.3,
+            fill: true,
+            pointRadius: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                min: 0,
+                max: 12,
+                ticks: {
+                    stepSize: 2,
+                    font: {
+                        size: 9
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Hours',
+                    font: {
+                        size: 10
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 8
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Sleep Quality Chart (Fixed Version)
+new Chart(document.getElementById('sleepQualityChart'), {
+    type: 'radar',
+    data: {
+        labels: ['Quality'],
+        datasets: [{
+            label: 'Avg Sleep Quality',
+            data: [{{ (sleep_quality|default([])|sum / (sleep_quality|default([])|length)) if (sleep_quality|default([])|length > 0) else 0 }}],
+            backgroundColor: 'rgba(13, 202, 240, 0.2)',
+            borderColor: '#0dcaf0',
+            borderWidth: 1,
+            pointBackgroundColor: '#0dcaf0',
+            pointRadius: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            r: {
+                angleLines: { display: false },
+                suggestedMin: 0,
+                suggestedMax: 5,
+                ticks: { 
+                    stepSize: 1,
+                    font: {
+                        size: 8
+                    }
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

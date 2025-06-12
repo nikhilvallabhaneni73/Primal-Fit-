@@ -1,0 +1,32 @@
+.intensity-meter {
+    background: #e9ecef;
+    border-radius: 20px;
+    height: 25px;
+    overflow: hidden;
+}
+
+.intensity-fill {
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    height: 100%;
+    transition: width 0.5s ease;
+    color: white;
+    font-size: 0.8rem;
+    padding-left: 10px;
+}
+
+.exercise-card {
+    transition: transform 0.3s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-3px);
+}
+
+.mark-complete {
+    transition: all 0.3s ease;
+}
+
+.mark-complete.completed {
+    background: #198754;
+    border-color: #198754;
+}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Personalized Welcome Section -->
+<section class="py-5 bg-primal-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="display-5 fw-bold mb-4 text-black">
+                    {% if current_user.is_authenticated %}
+                        Welcome Back, {{ current_user.name }}!
+                    {% else %}
+                        Start Your Primal Journey
+                    {% endif %}
+                </h2>
+                <p class="lead mb-4 text-black">Your AI-powered fitness companion is ready to guide you.</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="/workouts" class="btn btn-primal btn-lg px-4">
+                        <i class="bi bi-robot me-2"></i>Start AI Coaching
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-6 order-md-2">
+                <div class="primal-glow rounded overflow-hidden">
+                    <img src="{{ about_image }}" 
+                         class="img-fluid rounded" 
+                         alt="AI Fitness Coach"
+                         id="aiCoachImage">
+                </div>
+            </div>
+            <div class="col-md-6 order-md-1">
+                <h3 class="display-6 fw-bold mb-4">Your <span class="text-primal-accent">AI Fitness</span> Companion</h3>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="primal-icon-box bg-primal-primary me-3">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <h5>Adaptive Learning System</h5>
+                    </div>
+                    <p>Machine learning algorithms that personalize your fitness journey in real-time</p>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="primal-icon-box bg-primal-accent me-3">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h5>Privacy-First Design</h5>
+                    </div>
+                    <p>Secure, anonymous training with end-to-end data encryption</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load daily motivation
+        fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "Give me a short motivational quote about fitness"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const motivationElement = document.getElementById('dailyMotivation');
+            if(motivationElement) {
+                motivationElement.textContent = data.response.replace(/<\/?[^>]+(>|$)/g, "");
+            }
+        });
+    });
+</script>
+{% endblock %}

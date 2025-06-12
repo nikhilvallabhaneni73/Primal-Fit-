@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="contact-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="contact-header bg-primal-dark text-center p-4">
+                    <h1 class="text-black mb-2">Contact Primal Fit</h1>
+                    <p class="text-black mb-0">We're here to help you achieve your fitness goals</p>
+                </div>
+
+                <!-- Content -->
+                <div class="contact-body bg-primal-light p-4">
+                    <div class="row g-5">
+                        <!-- Contact Form -->
+                        <div class="col-md-6">
+                            <section class="mb-4">
+                                <h2 class="text-primal-primary mb-3">Send Us a Message</h2>
+                                {% with messages = get_flashed_messages(with_categories=true) %}
+                                    {% if messages %}
+                                        {% for category, message in messages %}
+                                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
+                                
+                                <form method="POST" action="{{ url_for('contact') }}">
+                                    <div class="mb-3">
+                                        <label class="form-label">Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person"></i>
+                                            </span>
+                                            <input type="text" name="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-envelope"></i>
+                                            </span>
+                                            <input type="email" name="email" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Subject</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-chat-square-text"></i>
+                                            </span>
+                                            <input type="text" name="subject" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label">Message</label>
+                                        <textarea name="message" class="form-control" rows="4" required></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primal w-100">
+                                        <i class="bi bi-send me-2"></i>Send Message
+                                    </button>
+                                </form>
+                            </section>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="col-md-6">
+                            <section class="mb-4">
+                                <h2 class="text-primal-primary mb-3">Other Ways to Connect</h2>
+                                <div class="card border-primal-accent mb-4">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-geo-alt me-2"></i>Headquarters</h5>
+                                        <p class="mb-0">Malla Reddy University</p>
+                                        <p class="mb-0">Maisammaguda, Dulapally, Hyderabad, Telangana 500043</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="card border-primal-accent mb-4">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-telephone me-2"></i>Support Hours</h5>
+                                        <p class="mb-1">Mon-Fri: 9AM - 5PM EST</p>
+                                        <p class="mb-0">Sat-Sun: Closed</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="card border-primal-accent">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-share me-2"></i>Social Media</h5>
+                                        <div class="d-flex gap-3 mt-2">
+                                            <a href="#" class="text-primal-dark">
+                                                <i class="bi bi-instagram fs-4"></i>
+                                            </a>
+                                            <a href="#" class="text-primal-dark">
+                                                <i class="bi bi-twitter-x fs-4"></i>
+                                            </a>
+                                            <a href="#" class="text-primal-dark">
+                                                <i class="bi bi-facebook fs-4"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <!-- Map Section -->
+                    <section class="mt-5">
+                        <div class="ratio ratio-16x9">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3803.841506136376!2d78.443911!3d17.5627311!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb8ff8652b6823%3A0x981713dbb4b708c3!2sMalla%20Reddy%20University!5e0!3m2!1sen!2sin!4v1744839482334!5m2!1sen!2sin" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy"
+                                class="rounded-3">
+                            </iframe>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any specific contact page JS here
+});
+</script>
+
+<style>
+.contact-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.contact-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.contact-header h1,
+.contact-header p {
+    color: #000 !important;
+}
+
+.border-primal-accent {
+    border-color: var(--primal-accent) !important;
+}
+
+.contact-body h2 {
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 2px solid var(--primal-accent);
+    padding-bottom: 0.5rem;
+}
+
+.input-group-text {
+    background-color: var(--primal-light);
+    border-color: var(--primal-accent);
+}
+</style>
+{% endblock %}

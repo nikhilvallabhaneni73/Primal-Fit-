@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="terms-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="terms-header bg-primal-dark text-center p-4">
+                    <h1 class="text-black mb-2">Terms of Service</h1>
+                    <p class="text-black mb-0">Effective Date: {{ current_year }}</p>
+                </div>
+
+                <!-- Content -->
+                <div class="terms-body bg-primal-light p-4">
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">1. Acceptance of Terms</h2>
+                        <p>By accessing or using Primal Fit, you agree to be bound by these Terms. If you disagree with any part, you may not access the service.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">2. User Responsibilities</h2>
+                        <div class="card border-primal-accent">
+                            <div class="card-body">
+                                <h5 class="text-primal-dark">You agree to:</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent">Provide accurate account information</li>
+                                    <li class="list-group-item bg-transparent">Maintain password security</li>
+                                    <li class="list-group-item bg-transparent">Use services for personal, non-commercial purposes</li>
+                                    <li class="list-group-item bg-transparent">Comply with all applicable laws</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">3. Content Usage</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card border-primal-accent h-100">
+                                    <div class="card-body">
+                                        <h5>Your Content</h5>
+                                        <p>You retain ownership of data you provide, but grant us a worldwide license to use it for service operation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-primal-accent h-100">
+                                    <div class="card-body">
+                                        <h5>Our Content</h5>
+                                        <p>All workout plans, AI recommendations, and platform content are intellectual property of Primal Fit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">4. Termination</h2>
+                        <div class="alert bg-primal-light">
+                            <p>We may suspend or terminate your access immediately if you:</p>
+                            <ul>
+                                <li>Breach these Terms</li>
+                                <li>Use the service unlawfully</li>
+                                <li>Engage in fraudulent activities</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">5. Disclaimers</h2>
+                        <div class="card bg-primal-dark text-black">
+                            <div class="card-body">
+                                <h5><i class="bi bi-exclamation-triangle me-2"></i>Important Notice</h5>
+                                <p>Fitness recommendations are general in nature. Consult a healthcare professional before beginning any new exercise program.</p>
+                                <p>We do not guarantee specific results from using our services.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 class="text-primal-primary mb-3">6. Governing Law</h2>
+                        <div class="alert bg-primal-light">
+                            <p>These Terms shall be governed by the laws of [Your Country/State] without regard to conflict of law principles.</p>
+                            <a href="/contact" class="btn btn-primal">
+                                <i class="bi bi-chat-dots me-2"></i>Contact for Disputes
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update effective year
+        document.querySelector('.terms-header p').textContent = 
+            `Effective Date: ${new Date().getFullYear()}`;
+    });
+</script>
+
+<style>
+.terms-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.terms-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.terms-header h1,
+.terms-header p {
+    color: #000 !important;
+}
+
+.terms-body h2 {
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 2px solid var(--primal-accent);
+    padding-bottom: 0.5rem;
+}
+
+.border-primal-accent {
+    border-color: var(--primal-accent) !important;
+}
+
+.card.bg-primal-dark .card-body {
+    color: #000 !important;
+}
+
+.bi-exclamation-triangle {
+    color: var(--primal-danger);
+}
+</style>
+{% endblock %}

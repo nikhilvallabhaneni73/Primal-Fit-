@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Nutrition Plan Card -->
+        <div class="col-lg-8">
+            <div class="card shadow h-100 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-0">AI Nutrition Plan</h2>
+                            <p class="mb-0">Generated in real-time based on your inputs</p>
+                        </div>
+                        <button class="btn btn-light" 
+                                onclick="generateNutritionPlan()" 
+                                id="generate-btn">
+                            <i class="bi bi-lightning-charge me-2"></i>
+                            Generate Plan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-body position-relative p-4">
+                    <div id="nutrition-plan">
+                        <div class="text-center py-5">
+                            <div class="ai-loader mb-3">
+                                <i class="bi bi-robot"></i>
+                            </div>
+                            <h4 class="text-primary mb-3">Your Plan Awaits</h4>
+                            <p class="text-muted">Configure your parameters and generate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Parameters Card -->
+        <div class="col-lg-4">
+            <div class="card shadow h-100 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-sliders me-2"></i>Nutrition Parameters
+                    </h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-speedometer2 me-1"></i>Weight (kg)
+                            </label>
+                            <input type="number" id="weight" 
+                                   class="form-control" 
+                                   min="30" max="300" 
+                                   value="70" step="0.1" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-arrows-angle-expand me-1"></i>Height (cm)
+                            </label>
+                            <input type="number" id="height"
+                                   class="form-control" 
+                                   min="100" max="250" 
+                                   value="175" step="0.1" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-fire me-1"></i>Daily Calories
+                            </label>
+                            <input type="number" id="calories"
+                                   class="form-control"
+                                   min="1200" max="5000" 
+                                   value="2000" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-basket me-1"></i>Diet Type
+                            </label>
+                            <select id="diet_type" class="form-select" required>
+                                <option value="balanced">Balanced</option>
+                                <option value="keto">Keto</option>
+                                <option value="vegetarian">Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-pencil me-1"></i>Special Instructions
+                            </label>
+                            <textarea id="custom_prompt"
+                                      class="form-control"
+                                      rows="2"
+                                      placeholder="e.g., high protein, low carb"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="bi bi-exclamation-octagon me-1"></i>Restrictions
+                            </label>
+                            <input type="text" id="allergies"
+                                   class="form-control"
+                                   placeholder="Dairy, Nuts, Gluten, etc.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function generateNutritionPlan() {
+        const params = {
+            weight: parseFloat(document.getElementById('weight').value),
+            height: parseFloat(document.getElementById('height').value),
+            calories: parseInt(document.getElementById('calories').value),
+            diet_type: document.getElementById('diet_type').value,
+            custom_prompt: document.getElementById('custom_prompt').value,
+            allergies: document.getElementById('allergies').value
+        };
+    
+        // Validation
+        if (!params.weight || params.weight < 30 || params.weight > 300) {
+            showError('Please enter valid weight (30-300 kg)');
+            return;
+        }
+        if (!params.height || params.height < 100 || params.height > 250) {
+            showError('Please enter valid height (100-250 cm)');
+            return;
+        }
+    
+        const btn = document.getElementById('generate-btn');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="bi bi-hourglass-split me-2"></i>Generating...`;
+    
+        fetch('/api/generate-nutrition-plan', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(params)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+            localStorage.setItem('lastPlan', JSON.stringify({
+                plan: data.plan,
+                params: params,
+                bmi: data.bmi,
+                bmiNote: data.bmi_note,
+                timestamp: new Date().toISOString()
+            }));
+            renderPlan(data.plan, data.bmi, data.bmi_note);
+        })
+        .catch(error => {
+            showError(`Generation failed: ${error.message}`);
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-lightning-charge me-2"></i>Regenerate`;
+        });
+    }
+    
+    function renderPlan(planText, bmiValue, bmiNote) {
+        const container = document.getElementById('nutrition-plan');
+        try {
+            const sections = parseResponse(planText);
+            container.innerHTML = buildPlanHTML(sections, bmiValue, bmiNote);
+            initProgressBars();
+        } catch (error) {
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    <h5>Display Error</h5>
+                    <p>${error.message}</p>
+                    <hr>
+                    <pre>${planText}</pre>
+                </div>`;
+        }
+    }
+    
+    function parseResponse(text) {
+        return {
+            macros: parseMacros(text),
+            dailyMeals: parseDailyMeals(text),
+            weeklyPlan: parseWeeklyPlan(text),
+            grocery: parseSection(text, 'Grocery List'),
+            prep: parseSection(text, 'Prep Tips')
+        };
+    }
+    
+    function parseMacros(text) {
+        const macros = {};
+        const macroRegex = /(\d+)%\s*(Protein|Carbs|Fats)/g;
+        let match;
+        
+        while ((match = macroRegex.exec(text)) !== null) {
+            macros[match[2].toLowerCase()] = match[1];
+        }
+        return macros;
+    }
+    
+    function parseWeeklyPlan(text) {
+        const weekly = {};
+        // Enhanced section matching with proper line breaks
+        const weeklySection = text.match(/\[Weekly Diet Plan\][\s\S]*?(\n\[|\n$)/i);
+        if (!weeklySection) return {};
+        
+        // Improved day parsing with flexible spacing
+        const dayRegex = /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday):\s*(.+?)(?=\n\w+:|$)/gmi;
+        let match;
+        
+        while ((match = dayRegex.exec(weeklySection[0]))) {
+            weekly[match[1]] = match[2].split(/,\s+/).map(item => item.trim());
+        }
+        return weekly;
+    }
+    
+
+    function parseDailyMeals(text) {
+        try {
+            const meals = [];
+            // Match daily meal section with optional whitespace
+            const dailyPlanSection = text.match(/\[Daily Meal Plan\][\s\S]*?(\n\[|\n$)/i);
+            if (!dailyPlanSection) return [];
+            
+            // Flexible meal type matching with optional colon and whitespace
+            const mealRegex = /(Breakfast|Lunch|Dinner|Snacks)[:\s]+(.+?)(?=\n\w+:|$)/gmi;
+            let match;
+            
+            while ((match = mealRegex.exec(dailyPlanSection[0]))) {
+                meals.push({
+                    type: match[1].trim(),
+                    items: match[2].split(/,\s+/).map(item => item.trim())
+                });
+            }
+            return meals;
+        } catch (e) {
+            console.error('Meal parsing error:', e);
+            return [];
+        }
+    }
+    
+    function parseSection(text, header) {
+        // Enhanced section parsing with optional colon and line breaks
+        const headerRegex = new RegExp(`\\[${header}\\][\\s\\S]*?(\\n\\[|$)`, 'i');
+        const match = text.match(headerRegex);
+        if (!match) return [];
+        
+        // Extract content between header and next section
+        const content = match[0].replace(new RegExp(`\\[${header}\\]\\s*`), '')
+                               .split(/\n\[/)[0];
+        
+        return content.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .map(line => line.replace(/^[-•*\d]+\.?\s*/, ''));
+    }
+    function extractSection(text, header) {
+        const start = text.indexOf(`[${header}]`);
+        if (start === -1) return null;
+        
+        const end = text.indexOf('\n\n', start);
+        return text.slice(start + header.length + 2, end > start ? end : text.length)
+            .split('\n')
+            .filter(line => line.trim())
+            .map(line => line.replace(/^[-•*]\s*/, '').trim());
+    }
+    
+    function buildPlanHTML(sections, bmiValue, bmiNote) {
+        let html = '';
+        
+        // BMI Section
+        if (bmiValue) {
+            html += `
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="display-6 text-primary">${bmiValue.toFixed(1)}</span>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h4><i class="bi bi-clipboard2-heart me-2"></i>Body Analysis</h4>
+                                    <p class="mb-0">${bmiNote}</p>
+                                    <small class="text-muted">BMI calculated from your inputs</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+    
+        // Macros Section
+        if (sections.macros) {
+            html += `
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <h4><i class="bi bi-pie-chart me-2"></i>Macros</h4>
+                            <div class="row g-3">
+                                ${Object.entries(sections.macros).map(([name, value]) => `
+                                <div class="col-md-4">
+                                    <div class="card bg-light h-100">
+                                        <div class="card-body text-center">
+                                            <h2 class="text-primary mb-0">${value}%</h2>
+                                            <small class="text-muted text-uppercase">${name}</small>
+                                            <div class="progress mt-2" style="height: 6px;">
+                                                <div class="progress-bar" data-width="${value}%" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+    
+        // Daily Meals
+        if (sections.dailyMeals?.length > 0) {
+            html += `
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <h4><i class="bi bi-list-task me-2"></i>Daily Meal Plan</h4>
+                            <div class="row g-3">
+                                ${sections.dailyMeals.map(meal => `
+                                <div class="col-md-6">
+                                    <div class="card bg-light h-100">
+                                        <div class="card-body">
+                                            <h5 class="text-primary">
+                                                <i class="bi bi-${getMealIcon(meal.type)} me-2"></i>
+                                                ${meal.type}
+                                            </h5>
+                                            <ul class="list-unstyled">
+                                                ${(meal.items || []).map(item => `
+                                                <li class="d-flex align-items-center mb-2">
+                                                    <i class="bi bi-check2-circle text-primary me-2"></i>
+                                                    ${item}
+                                                </li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+    
+        // Weekly Plan
+        if (sections.weeklyPlan) {
+            html += `
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <h4><i class="bi bi-calendar-week me-2"></i>Weekly Plan</h4>
+                            <div class="accordion" id="weeklyPlan">
+                                ${Object.entries(sections.weeklyPlan).map(([day, meals], index) => `
+                                <div class="accordion-item">
+                                    <h5 class="accordion-header">
+                                        <button class="accordion-button ${index > 0 ? 'collapsed' : ''}" 
+                                                type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#day${index}">
+                                            ${day}
+                                        </button>
+                                    </h5>
+                                    <div id="day${index}" 
+                                         class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+                                         data-bs-parent="#weeklyPlan">
+                                        <div class="accordion-body">
+                                            <ul class="list-unstyled">
+                                                ${meals.map(meal => `
+                                                <li class="d-flex align-items-center mb-2">
+                                                    <i class="bi bi-check2 text-primary me-2"></i>
+                                                    ${meal}
+                                                </li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+    
+        // Grocery & Prep
+        ['grocery', 'prep'].forEach(section => {
+            if (sections[section]) {
+                html += `
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="card border-primary">
+                            <div class="card-body">
+                                <h4><i class="bi bi-${section === 'grocery' ? 'cart' : 'clock'} me-2"></i>
+                                    ${section === 'grocery' ? 'Grocery List' : 'Prep Tips'}
+                                </h4>
+                                <ul class="list-unstyled">
+                                    ${sections[section].map(item => `
+                                    <li class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-${section === 'grocery' ? 'cart-check' : 'lightbulb'} text-primary me-2"></i>
+                                        ${item}
+                                    </li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        });
+    
+        return html;
+    }
+    
+    function getMealIcon(mealType) {
+        const icons = {
+            breakfast: 'cup-hot',
+            lunch: 'egg-fried',
+            dinner: 'moon',
+            snacks: 'apple',
+            snack: 'apple'
+        };
+        return icons[(mealType || '').toLowerCase()] || 'clock';
+    }
+    
+    function initProgressBars() {
+        document.querySelectorAll('.progress-bar').forEach(bar => {
+            const targetWidth = bar.getAttribute('data-width');
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = targetWidth;
+            }, 100);
+        });
+    }
+    
+    function showError(message) {
+        const container = document.getElementById('nutrition-plan');
+        container.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show">
+                <h5>Error!</h5>
+                <p>${message}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+    }
+    
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('lastPlan');
+        if (saved) {
+            try {
+                const { plan, bmi, bmiNote } = JSON.parse(saved);
+                renderPlan(plan, bmi, bmiNote);
+                document.getElementById('generate-btn').innerHTML = 
+                    `<i class="bi bi-lightning-charge me-2"></i>Regenerate`;
+            } catch {
+                localStorage.removeItem('lastPlan');
+            }
+        }
+    });
+    </script>
+
+<style>
+.ai-loader {
+    font-size: 4rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+.progress-bar {
+    transition: width 0.8s ease-in-out;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+</style>
+{% endblock %}

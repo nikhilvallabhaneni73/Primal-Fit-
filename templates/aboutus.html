@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Mission Section -->
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4 text-primary">
+                        <i class="bi bi-bullseye me-2"></i>Our Mission
+                    </h2>
+                    <p class="lead text-center">
+                        To empower individuals worldwide to achieve their fitness goals through AI-driven personalized 
+                        training and nutrition plans, making professional-grade health guidance accessible to everyone.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vision Section -->
+        <div class="col-md-6">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="bi bi-eye me-2"></i>Our Vision</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        To become the world's most trusted AI fitness companion, revolutionizing how people approach 
+                        health and wellness through cutting-edge technology and evidence-based practices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Values Section -->
+        <div class="col-md-6">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="bi bi-heart-pulse me-2"></i>Core Values</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>Personalized Health Solutions</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>Scientific Accuracy</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>Technological Innovation</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i>User Privacy & Security</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Founder Section -->
+        <div class="col-12">
+            <div class="card mt-4 border-primary">
+                <div class="row g-0">
+                    <div class="col-md-4 text-center p-4">
+                        <img src="/static/images/founder1.jpeg" 
+                             class="img-fluid rounded-circle shadow-sm" 
+                             alt="Founder"
+                             style="max-width: 300px;">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title text-primary">
+                                <i class="bi bi-person-badge me-2"></i>Founder
+                            </h3>
+                            <h4 class="mb-3">Nikhil Vallabhaneni</h4>
+                            <div class="mb-4">
+                                <h5 class="text-muted">
+                                    <i class="bi bi-building me-2"></i>Malla Reddy University
+                                </h5>
+                                <p class="lead">B.Tech in Computer Science & Engineering (Cybersecurity)</p>
+                            </div>
+                            <div class="bg-light p-4 rounded">
+                                <p class="mb-3">
+                                    "Our vision with Primal Fit is to bridge the gap between advanced cybersecurity 
+                                    principles and health technology, creating a platform that's both powerful and 
+                                    secure."
+                                </p>
+                                <div class="d-flex gap-3">
+                                    <a href="https://www.linkedin.com/in/dannic145" 
+                                       class="btn btn-outline-primary"
+                                       target="_blank">
+                                        <i class="bi bi-linkedin me-2"></i>LinkedIn
+                                    </a>
+                                    <a href="https://github.com/dannic145" 
+                                       class="btn btn-outline-primary"
+                                       target="_blank">
+                                        <i class="bi bi-github me-2"></i>GitHub
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .rounded-circle {
+        border: 3px solid var(--bs-primary);
+    }
+</style>
+{% endblock %}

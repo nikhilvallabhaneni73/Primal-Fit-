@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="auth-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Registration Header -->
+                <div class="auth-header bg-primal-dark text-center p-4">
+                    <h2 class="text-black mb-0 text-black">Start Your Primal Journey</h2>
+                    <p class="text-primal-accent mb-0">Create Your Free Account</p>
+                </div>
+
+                <!-- Registration Form -->
+                <div class="auth-body bg-primal-light p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <div class="row g-3">
+                            <!-- Name Field -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="name" name="name" 
+                                               required placeholder="John Doe">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Age Field -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="age" class="form-label">Age</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-calendar"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="age" name="age" 
+                                               min="13" max="100" required placeholder="25">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               required placeholder="john@example.com">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="col-12">
+                                <div class="mb-4">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-lock"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="password" name="password" 
+                                               required minlength="8" placeholder="••••••••">
+                                    </div>
+                                    <div class="form-text">Minimum 8 characters</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primal w-100 mb-3">
+                            Create Account
+                        </button>
+
+                        <div class="text-center small mt-4">
+                            <span class="text-muted">Already have an account? </span>
+                            <a href="{{ url_for('login') }}" class="text-primal-dark fw-bold">Sign In</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password visibility toggle
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.createElement('span');
+    togglePassword.className = 'input-group-text cursor-pointer';
+    togglePassword.innerHTML = '<i class="bi bi-eye"></i>';
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.innerHTML = type === 'password' ? 
+            '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+    });
+    passwordInput.parentNode.appendChild(togglePassword);
+});
+</script>
+
+<style>
+.auth-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.auth-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.input-group-text {
+    background-color: var(--primal-light);
+    border-color: var(--primal-accent);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cursor-pointer:hover {
+    opacity: 0.8;
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: var(--primal-secondary);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="privacy-policy-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="privacy-header bg-primal-dark text-center p-4">
+                    <h1 class="text-black mb-2">Privacy Policy</h1>
+                    <p class="text-black mb-0">Effective Date: {{ current_year }}</p>
+                </div>
+
+                <!-- Content -->
+                <div class="privacy-body bg-primal-light p-4">
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">1. Introduction</h2>
+                        <p>Welcome to Primal Fit! We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and protect your data when you use our services.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">2. Data We Collect</h2>
+                        <div class="card border-primal-accent mb-3">
+                            <div class="card-body">
+                                <h5 class="text-primal-dark">Personal Information:</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent">Name</li>
+                                    <li class="list-group-item bg-transparent">Email address</li>
+                                    <li class="list-group-item bg-transparent">Age</li>
+                                    <li class="list-group-item bg-transparent">Fitness preferences</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card border-primal-accent">
+                            <div class="card-body">
+                                <h5 class="text-primal-dark">Automated Data:</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent">Usage patterns</li>
+                                    <li class="list-group-item bg-transparent">Device information</li>
+                                    <li class="list-group-item bg-transparent">Workout progress</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">3. How We Use Data</h2>
+                        <div class="privacy-points">
+                            <div class="d-flex mb-3">
+                                <div class="primal-icon-box bg-primal-accent me-3">
+                                    <i class="bi bi-person-gear"></i>
+                                </div>
+                                <div>
+                                    <h5>Personalized Services</h5>
+                                    <p>Create customized workout and nutrition plans</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="primal-icon-box bg-primal-primary me-3">
+                                    <i class="bi bi-shield-lock"></i>
+                                </div>
+                                <div>
+                                    <h5>Security</h5>
+                                    <p>Protect against unauthorized access</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">4. Data Sharing</h2>
+                        <p>We only share data with third-party services essential to our operations:</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card border-primal-accent h-100">
+                                    <div class="card-body">
+                                        <h5>AI Service Providers</h5>
+                                        <ul>
+                                            <li>Groq</li>
+                                            <li>Stability AI</li>
+                                            <li>OpenAI</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-primal-accent h-100">
+                                    <div class="card-body">
+                                        <h5>Media Providers</h5>
+                                        <ul>
+                                            <li>Pexels</li>
+                                            <li>Unsplash</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="text-primal-primary mb-3">5. Your Rights</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card bg-primal-dark h-100">
+                                    <div class="card-body text-black">
+                                        <h5 class="text-black"><i class="bi bi-eye me-2"></i>Access</h5>
+                                        <p class="text-black">Request copies of your data</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-primal-primary h-100">
+                                    <div class="card-body text-black">
+                                        <h5 class="text-black"><i class="bi bi-trash me-2"></i>Deletion</h5>
+                                        <p class="text-black">Request data deletion</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 class="text-primal-primary mb-3">6. Contact Us</h2>
+                        <div class="alert bg-primal-light">
+                            <p>For privacy concerns:</p>
+                            <a href="mailto:support@primalfit.com" class="btn btn-primal">
+                                <i class="bi bi-envelope me-2"></i>support@primalfit.com
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update effective year
+        document.querySelector('.privacy-header p').textContent = 
+            `Effective Date: ${new Date().getFullYear()}`;
+    });
+</script>
+
+<style>
+.privacy-policy-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.privacy-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.privacy-header h1,
+.privacy-header p {
+    color: #000 !important;
+}
+
+.privacy-body h2 {
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 2px solid var(--primal-accent);
+    padding-bottom: 0.5rem;
+}
+
+.privacy-points .primal-icon-box {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+}
+
+.border-primal-accent {
+    border-color: var(--primal-accent) !important;
+}
+
+.card.bg-primal-dark .card-body,
+.card.bg-primal-primary .card-body {
+    color: #000 !important;
+}
+
+.card.bg-primal-dark h5,
+.card.bg-primal-primary h5 {
+    color: #000 !important;
+}
+
+.bi-eye,
+.bi-trash {
+    color: #000 !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Primal Fit - Unleash Your Potential{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Dynamic Header Background -->
+    <header id="header-bg" class="dynamic-header position-relative" style="background-image: url('{{ generate_ai_image("fitness gym workout professional photography") }}');">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark primal-nav">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <span class="brand-text">PRIMAL FIT</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chatbot">Primal AI</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#features">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/aboutus">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/nutrition">Nutrition</a>
+                        </li>
+                    </ul>
+                    <div class="ms-lg-3 mt-3 mt-lg-0">
+                        {% if current_user.is_authenticated %}
+                            <a href="/logout" class="btn btn-outline-primal">Log Out</a>
+                        {% else %}
+                            <a href="/login" class="btn btn-outline-primal me-2">Sign In</a>
+                            <a href="/register" class="btn btn-primal">Join Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    
+        <!-- Hero Content -->
+        <div class="container py-5">
+            <div class="row align-items-center py-5">
+                <div class="col-lg-6">
+                    <div class="bg-dark bg-opacity-50 p-4 rounded">
+                        <h1 class="display-3 fw-bold text-white mb-3">Unleash Your <span class="text-primal-accent">Primal</span> Potential</h1>
+                        <p class="lead text-white mb-4">AI-powered fitness coaching tailored to your unique physiology and goals.</p>
+                        <div class="d-flex gap-3">
+                            {% if not current_user.is_authenticated %}
+                                <a href="/register" class="btn btn-primal btn-lg px-4">Start Free Trial</a>
+                            {% endif %}
+                            <a href="/chatbot" class="btn btn-outline-light btn-lg px-4">Try Primal AI</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+        
+        <!-- Dynamic Featured Section -->
+        <section id="features" class="py-5 bg-primal-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Your <span class="text-primal-primary">AI-Powered</span> Fitness Journey</h2>
+                    <p class="lead">Fresh inspiration delivered daily through our dynamic fitness system</p>
+                </div>
+                <div class="row g-4" id="featureCards">
+                    <!-- Dynamic Cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="primal-footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="footer-heading">PRIMAL FIT</h5>
+                    <p class="footer-text">Unleash your potential with science-backed primal fitness and nutrition guidance.</p>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <h5 class="footer-heading">Legal</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="/privacy" class="footer-link">Privacy Policy</a></li>
+                                <li class="mb-2"><a href="/terms" class="footer-link">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <h5 class="footer-heading">Support</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="/contact" class="footer-link">Contact Us</a></li>
+                                <li class="mb-2"><a href="/faq" class="footer-link">FAQ</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="footer-heading">Connect</h5>
+                            <div class="social-icons mt-3">
+                                <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="text-white me-3"><i class="bi bi-twitter-x"></i></a>
+                                <a href="#" class="text-white"><i class="bi bi-tiktok"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4 primal-hr">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 footer-text">© 2025 Primal Fit. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 footer-text">Powered by AI, Built with ❤️</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadDynamicContent = async () => {
+                try {
+                    const features = [
+                        { 
+                            title: 'Smart Workouts', 
+                            query: 'strength training',
+                            link: '/workouts',
+                            description: 'Personalized workout plans that adapt to your progress'
+                        },
+                        { 
+                            title: 'AI Nutrition', 
+                            query: 'healthy nutrition',
+                            link: '/nutrition',
+                            description: 'Custom meal plans based on your dietary needs'
+                        },
+                        { 
+                            title: 'Progress Tracking', 
+                            query: 'fitness analytics',
+                            link: '/progress',
+                            description: 'Visualize your journey with detailed insights'
+                        }
+                    ];
+    
+                    const cardsContainer = document.getElementById('featureCards');
+                    
+                    const cardsHTML = await Promise.all(features.map(async (feature) => {
+                        try {
+                            const imgResponse = await fetch(`/api/get-image?query=${encodeURIComponent(feature.query)}`);
+                            if (!imgResponse.ok) throw new Error('Network response was not ok');
+                            
+                            const imgData = await imgResponse.json();
+                            const imgUrl = imgData.url || '/static/images/fallback/general.jpg';
+                            
+                            return `
+                                <div class="col-md-4 mb-4">
+                                    <a href="${feature.link}" class="text-decoration-none text-dark">
+                                        <div class="card h-100 border-0 shadow-primal-hover">
+                                            <img src="${imgUrl}" 
+                                                 class="card-img-top" 
+                                                 alt="${feature.title}" 
+                                                 style="height: 200px; object-fit: cover;"
+                                                 loading="lazy">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${feature.title}</h5>
+                                                <p class="card-text">${feature.description}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                        } catch (error) {
+                            console.error('Error loading feature card:', error);
+                            return `
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100 border-0">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${feature.title}</h5>
+                                            <p class="card-text">${feature.description}</p>
+                                            <small class="text-muted">Image unavailable</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }));
+                    
+                    cardsContainer.innerHTML = cardsHTML.join('');
+    
+                } catch (error) {
+                    console.error('Error loading dynamic content:', error);
+                }
+            };
+    
+            loadDynamicContent();
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="chatbot-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Chat Header -->
+                <div class="chat-header bg-primal-dark text-center p-4">
+                    <h2 class="mb-1 text-black">Primal AI Assistant</h2>
+                    <p class="mb-0 text-black">Your 24/7 Fitness Expert</p>
+                </div>
+
+                <!-- Chat Body -->
+                <div class="chat-body bg-primal-light p-4">
+                    <div id="chat-messages" class="chat-messages mb-3">
+                        <!-- Initial System Message -->
+                        <div class="system-message bg-dark text-white rounded-3 p-3 mb-3">
+                            <strong class="text-white">Primal AI:</strong> 
+                            Let's create your perfect fitness plan! Could you share:<br>
+                            • Your primary goal (weight loss, muscle gain, endurance)<br>
+                            • Current fitness level<br>
+                            • Available equipment<br>
+                            • Weekly workout days
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="chat-input">
+                        <div class="input-group">
+                            <textarea id="user-input" class="form-control primal-input" 
+                                      rows="2" placeholder="Type your message here..."
+                                      aria-label="Chat input"></textarea>
+                            <button id="voice-btn" class="btn btn-primal-accent" 
+                                    data-bs-toggle="tooltip" title="Voice Input">
+                                <i class="bi bi-mic"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Control Buttons -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="d-flex gap-2">
+                                <button id="send-btn" class="btn btn-primal">
+                                    <i class="bi bi-send me-2"></i>Send
+                                </button>
+                            </div>
+                            <button id="clear-btn" class="btn btn-link text-dark" 
+                                    data-bs-toggle="tooltip" title="Clear Conversation">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const clearBtn = document.getElementById('clear-btn');
+
+    // Function to add messages to the chat
+    function addMessage(role, content, image) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role === 'user' ? 'user-message' : 'system-message'} rounded-3 p-3 mb-3`;
+        
+        let contentHTML = `<strong>${role === 'user' ? 'You:' : 'Primal AI:'}</strong> ${content}`;
+        
+        if (image) {
+            contentHTML += `<div class="mt-3"><img src="${image}" class="img-fluid rounded"></div>`;
+        }
+
+        messageDiv.innerHTML = contentHTML;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Handle message sending
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage('user', message);
+        userInput.value = '';
+
+        try {
+            // Get AI response
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            const parser = new DOMParser();
+            const decodedResponse = parser.parseFromString(data.response, 'text/html').body.textContent;
+            
+            // Add AI response
+            addMessage('system', decodedResponse, data.image);
+        } catch (error) {
+            addMessage('system', `Error: ${error.message}`);
+        }
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    clearBtn.addEventListener('click', async () => {
+        await fetch('/api/clear_chat', { method: 'POST' });
+        chatMessages.innerHTML = `
+            <div class="system-message bg-dark text-white rounded-3 p-3 mb-3">
+                <strong>Primal AI:</strong> Let's start fresh! What can I help with today?
+            </div>
+        `;
+    });
+});
+</script>
+
+<style>
+.chatbot-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.chat-header {
+    border-bottom: 3px solid var(--primal-accent);
+    background-color: var(--primal-light) !important;
+}
+
+.chat-header h2,
+.chat-header p {
+    color: #000 !important;
+}
+
+.system-message {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid var(--primal-accent);
+}
+
+.user-message {
+    background-color: var(--primal-light) !important;
+    color: #000 !important;
+    border: 1px solid #dee2e6;
+    margin-left: auto;
+    width: fit-content;
+}
+
+.primal-input {
+    border-radius: 1rem !important;
+    resize: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+}
+
+#chat-messages {
+    min-height: 300px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+</style>
+{% endblock %}

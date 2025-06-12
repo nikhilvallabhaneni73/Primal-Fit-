@@ -1,0 +1,307 @@
+:root {
+    --primal-primary: #FF6B35;
+    --primal-secondary: #004E89;
+    --primal-dark: #1A1A1A;
+    --primal-light: #F7F7F7;
+    --primal-accent: #00A896;
+    --primal-danger: #EF476F;
+    --primal-success: #06D6A0;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primal-dark);
+    background-color: var(--primal-light);
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+
+.dynamic-header {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    position: relative;
+    min-height: 600px;
+    color: white;
+}
+
+.dynamic-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Darker overlay for better text visibility */
+    z-index: 1;
+}
+
+.dynamic-header > * {
+    position: relative;
+    z-index: 2; /* Ensure content is above the overlay */
+}
+
+
+/* Navigation */
+.primal-nav {
+    background-color: var(--primal-dark);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.brand-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, var(--primal-primary), var(--primal-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Buttons */
+.btn-primal {
+    background-color: var(--primal-primary);
+    border-color: var(--primal-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-primal:hover {
+    background-color: #e05a2b;
+    border-color: #e05a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(239, 71, 111, 0.2);
+}
+
+.btn-outline-primal {
+    border-color: var(--primal-primary);
+    color: var(--primal-primary);
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primal:hover {
+    background-color: var(--primal-primary);
+    color: white;
+}
+
+/* Footer */
+.primal-footer {
+    background-color: var(--primal-dark);
+    color: white;
+}
+
+.footer-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primal-primary), var(--primal-accent));
+}
+
+.footer-text {
+    opacity: 0.8;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: white;
+    padding-left: 5px;
+}
+
+.primal-hr {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.social-icons a {
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    transform: translateY(-3px);
+}
+
+/* Form Elements */
+.primal-input {
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.primal-input:focus {
+    border-color: var(--primal-primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25);
+}
+
+/* Chat Interface */
+.chat-messages {
+    background-color: var(--primal-dark);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.bot-message {
+    color: white;
+    padding: 12px 18px;
+    margin: 10px 0;
+    border-radius: 18px 18px 18px 0;
+    max-width: 80%;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-message {
+    color: var(--primal-success);
+    text-align: right;
+    margin-left: auto;
+    padding: 12px 18px;
+    border-radius: 18px 18px 0 18px;
+    background-color: rgba(6, 214, 160, 0.1);
+}
+
+/* Dynamic Elements */
+.dynamic-header {
+    background-size: cover;
+    background-position: center;
+    min-height: 600px;
+    position: relative;
+}
+
+.dynamic-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.dynamic-image {
+    transition: opacity 0.5s ease;
+    background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+}
+
+.dynamic-image.loaded {
+    opacity: 1;
+}
+
+/* Utility Classes */
+.rounded-lg {
+    border-radius: 1rem;
+}
+
+.shadow-primal {
+    box-shadow: 0 10px 30px rgba(239, 71, 111, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .navbar-collapse {
+        padding-top: 1rem;
+    }
+    
+    .navbar-nav {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-col {
+        margin-bottom: 2rem;
+    }
+    
+    .dynamic-header {
+        min-height: 400px;
+    }
+    
+    .chat-messages {
+        max-height: 50vh;
+    }
+    
+    .btn-primal, .btn-outline-primal {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Additional Enhancements */
+.primal-glow {
+    box-shadow: 0 0 15px rgba(0, 168, 150, 0.2);
+}
+
+.primal-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.nutrition-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.nutrition-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.nutrition-plan {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.nutrition-plan h4 {
+    color: var(--primal-primary);
+    margin-top: 1.5rem;
+}
+
+.nutrition-plan ul {
+    list-style-type: circle;
+    padding-left: 1.5rem;
+}

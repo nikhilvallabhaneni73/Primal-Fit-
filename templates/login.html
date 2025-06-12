@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="auth-card shadow-primal rounded-4 overflow-hidden">
+                <!-- Login Header -->
+                <div class="auth-header bg-primal-dark text-center p-4 text-black">
+                    <h2 class="text-black mb-0">Welcome Back</h2>
+                    <p class="text-primal-accent mb-0">Continue Your Fitness Journey</p>
+                </div>
+
+                <!-- Login Form -->
+                <div class="auth-body bg-primal-light p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('login') }}">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       required autofocus placeholder="your.email@example.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       required placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primal w-100 mb-3">
+                            Sign In
+                        </button>
+
+                        <div class="text-center small mt-4">
+                            <span class="text-muted">New to Primal Fit? </span>
+                            <a href="{{ url_for('register') }}" class="text-primal-dark fw-bold">Create Account</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password visibility toggle
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.createElement('span');
+    togglePassword.className = 'input-group-text cursor-pointer';
+    togglePassword.innerHTML = '<i class="bi bi-eye"></i>';
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.innerHTML = type === 'password' ? 
+            '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+    });
+    passwordInput.parentNode.appendChild(togglePassword);
+});
+</script>
+
+<style>
+.auth-card {
+    border: 2px solid var(--primal-accent);
+}
+
+.auth-header {
+    border-bottom: 3px solid var(--primal-accent);
+}
+
+.input-group-text {
+    background-color: var(--primal-light);
+    border-color: var(--primal-accent);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cursor-pointer:hover {
+    opacity: 0.8;
+}
+</style>
+{% endblock %}
